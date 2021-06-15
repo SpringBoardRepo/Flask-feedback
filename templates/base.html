@@ -11,32 +11,27 @@
     />
   </head>
   <body>
-      
-       <nav class="navbar navbar-dark bg-dark justify-content-between">
+    <nav class="navbar navbar-dark bg-dark justify-content-between">
       <a class="navbar-brand" href="/">User</a>
-       <ul class="nav justify-content-end">
-        
+      <ul class="nav justify-content-end">
         {% if session['username']%}
-        <li class='nav-item'>
-          <a class="nav-link" href="/logout">Logout</span></a>
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Logout</a>
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="/login">Login</span></a>
+          <a class="nav-link" href="/login">Login</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/register">Sign Up</span></a>
+          <a class="nav-link" href="/register">Sign Up</a>
         </li>
         {% endif %}
       </ul>
-     
-     
     </nav>
     <div class="container" style="margin-top: 2em">
       {% for category, msg in get_flashed_messages(with_categories=True) %}
       <div class="alert alert-{{category}}">{{ msg }}</div>
       {% endfor %} {% block content %}{% endblock %}
     </div>
-     
   </body>
 </html>

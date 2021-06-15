@@ -10,15 +10,22 @@
   <a href="/{{user.username}}/feedback/add" class="btn btn-info"
     >Give Us A Feeback!!</a
   >
+  <form action="/users/{{user.username}}/delete" method="POST">
+    <button class="btn btn-danger">Delete User</button>
+  </form>
   <div>
-    {% for feedback in user.feedbacks %}
+    {% for feedback in feedbacks %}
     <div class="card my-3">
       <li class="card-body">
-        <b>{{user.username }} {{feedback.title}}</b> - {{feedback.content}}
+        <b>{{feedback.username }} {{feedback.title}}</b> - {{feedback.content}}
+        {% if session['username'] == feedback.user_name %}
         <p>
-          <a href="" class="card-link">Edit</a>
-          <a href="" class="card-link">Delete</a>
+          <a href="/feedback/{{feedback.id}}/edit" class="card-link">Edit</a>
+          <a href="/feedback/{{feedback.id}}/delete" class="card-link"
+            >Delete</a
+          >
         </p>
+        {% endif %}
       </li>
     </div>
     {% endfor %}

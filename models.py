@@ -1,3 +1,4 @@
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 
@@ -25,6 +26,9 @@ class User(db.Model):
     first_name = db.Column(db.Text, nullable=False)
 
     last_name = db.Column(db.Text, nullable=False)
+
+    feedback = db.relationship(
+        'Feedback', backref="user", cascade='all,delete')
 
     @classmethod
     def register(cls, username, password, email, first_name, last_name):
@@ -58,5 +62,3 @@ class Feedback(db.Model):
     content = db.Column(db.Text, nullable=False)
 
     user_name = db.Column(db.Text, db.ForeignKey('users.username'))
-
-    user = db.relationship('User', backref="feedbacks", cascade="all, delete")

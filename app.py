@@ -1,3 +1,4 @@
+from flask_wtf import form
 from models import Feedback, connect_db, db, User
 from flask import Flask, render_template, flash, redirect, render_template, session, sessions
 from flask_debugtoolbar import DebugToolbarExtension
@@ -76,7 +77,7 @@ def user_page(username):
         return redirect('/login')
 
     user = User.query.get_or_404(username)
-    feedbacks = Feedback.query.filter_by(user_name=username)
+    feedbacks = Feedback.query.all()
     return render_template('user_page.html', user=user, feedbacks=feedbacks)
 
 
@@ -90,6 +91,7 @@ def logout_page():
 @app.route('/<string:username>/feedback/add', methods=['GET', 'POST'])
 def feedback(username):
     form = FeedbackForm()
+
     if 'username' not in session:
         flash(f'Please login!!!', 'danger')
         return redirect('/login')
@@ -97,8 +99,56 @@ def feedback(username):
         title = form.title.data
         content = form.content.data
 
-        feedback = Feedback(title=title, content=content, user_name=username)
+        feedback = Feedback(title=title, content=content,
+                            user_name=username)
         db.session.add(feedback)
         db.session.commit()
         return redirect(f'/users/{username}')
     return render_template('feedback.html', form=form)
+
+
+@app.route('/feedback/<int:id>/edit', methods=['GET', 'POST'])
+def edit_feedback(id):
+    feedback = Feedback.query.get_or_404(id)
+
+    form = FeedbackForm(obj=feedback)
+    if 'username' not in session:
+        flash('Please login First!!', 'danger')
+        return redirect('/login')
+    if form.validate_on_submit():
+        feedback.title = form.title.data
+        feedback.content = form.content.data
+
+        db.session.add(feedback)
+        db.session.commit()
+        return redirect(f'/users/{feedback.user_name}')
+
+    return render_template('feedback.html', form=form)
+
+
+@app.route('/feedback/<int:id>/delete')
+def delete_feedback(id):
+
+    feedback = Feedback.query.get_or_404(id)
+    if feedback.user_name == session['username']:
+        db.session.delete(feedback)
+        db.session.commit()
+        flash('Feedback Deleted', 'info')
+        return redirect(f'/users/{feedback.user_name}')
+
+    flash('You can not delete this feedback', 'info')
+    return redirect(f'/users/{feedback.user_name}')
+
+
+@app.route('/users/<string:username>/delete', methods=['POST'])
+def delete_user(username):
+
+    user = User.query.get_or_404(username)
+    if user.username == session['username']:
+        db.session.delete(user)
+        db.session.commit()
+        session.pop('username')
+        flash('Account Deleted', 'warning')
+        return redirect('/register')
+    flash('You can not delete this Account', 'info')
+    return redirect(f'/users/{user.username}')
