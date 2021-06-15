@@ -7,6 +7,22 @@
   <p><b>Email Id</b>-{{user.email}}</p>
   <p><b>First Name</b>-{{user.first_name}}</p>
   <p><b>Last Name</b>-{{user.last_name}}</p>
+  <a href="/{{user.username}}/feedback/add" class="btn btn-info"
+    >Give Us A Feeback!!</a
+  >
+  <div>
+    {% for feedback in user.feedbacks %}
+    <div class="card my-3">
+      <li class="card-body">
+        <b>{{user.username }} {{feedback.title}}</b> - {{feedback.content}}
+        <p>
+          <a href="" class="card-link">Edit</a>
+          <a href="" class="card-link">Delete</a>
+        </p>
+      </li>
+    </div>
+    {% endfor %}
+  </div>
 </div>
 
 {% endblock %}

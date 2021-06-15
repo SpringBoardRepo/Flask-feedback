@@ -1,7 +1,7 @@
-from models import connect_db, db, User
+from models import Feedback, connect_db, db, User
 from flask import Flask, render_template, flash, redirect, render_template, session, sessions
 from flask_debugtoolbar import DebugToolbarExtension
-from forms import UserForm, LoginForm
+from forms import FeedbackForm, UserForm, LoginForm
 from sqlalchemy.exc import IntegrityError
 
 
@@ -70,12 +70,14 @@ def login_page():
 
 @app.route('/users/<string:username>')
 def user_page(username):
-    user = User.query.get_or_404(username)
+
     if 'username' not in session:
         flash('Please login first', 'danger')
         return redirect('/login')
 
-    return render_template('user_page.html', user=user)
+    user = User.query.get_or_404(username)
+    feedbacks = Feedback.query.filter_by(user_name=username)
+    return render_template('user_page.html', user=user, feedbacks=feedbacks)
 
 
 @app.route('/logout')
@@ -83,3 +85,20 @@ def logout_page():
     session.pop('username')
     flash('Successfully Logout', 'info')
     return redirect('/')
+
+
+@app.route('/<string:username>/feedback/add', methods=['GET', 'POST'])
+def feedback(username):
+    form = FeedbackForm()
+    if 'username' not in session:
+        flash(f'Please login!!!', 'danger')
+        return redirect('/login')
+    if form.validate_on_submit():
+        title = form.title.data
+        content = form.content.data
+
+        feedback = Feedback(title=title, content=content, user_name=username)
+        db.session.add(feedback)
+        db.session.commit()
+        return redirect(f'/users/{username}')
+    return render_template('feedback.html', form=form)

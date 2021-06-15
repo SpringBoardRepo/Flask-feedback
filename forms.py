@@ -2,7 +2,6 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms import validators
 from wtforms.fields.simple import PasswordField
-from wtforms.validators import InputRequired, Length
 
 
 class UserForm(FlaskForm):

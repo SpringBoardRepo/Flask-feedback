@@ -1,0 +1,15 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container justify-content-center">
+  <h1 class="text-center">Feedback</h1>
+  <form method="POST">
+    {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
+    'hidden'%}
+    <p>
+      {{field.label}} {{field(class_="form-group form-control mx-sm-3 mb-2")}}
+      {% for err in field.errors %} {{err}} {% endfor %}
+    </p>
+    {% endfor %}
+    <button class="btn btn-primary">Submit</button>
+  </form>
+</div>
+{% endblock %}
