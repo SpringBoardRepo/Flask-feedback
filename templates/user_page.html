@@ -1,0 +1,12 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container text-center">
+  <h1>User Info</h1>
+
+  <p><b>User Name</b>-{{user.username}}</p>
+
+  <p><b>Email Id</b>-{{user.email}}</p>
+  <p><b>First Name</b>-{{user.first_name}}</p>
+  <p><b>Last Name</b>-{{user.last_name}}</p>
+</div>
+
+{% endblock %}
