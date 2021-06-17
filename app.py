@@ -4,11 +4,12 @@ from flask import Flask, render_template, flash, redirect, render_template, sess
 from flask_debugtoolbar import DebugToolbarExtension
 from forms import FeedbackForm, UserForm, LoginForm
 from sqlalchemy.exc import IntegrityError
-
+import os
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "oh-so-secret"
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost/flask-feedback?user=postgres&password=postgresql"
+app.config["SECRET_KEY"] = os.environ.get('SECERT_KEY', "oh-so-secret")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+    'DATABASE_URL', "postgresql://localhost/flask-feedback?user=postgres&password=postgresql")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
